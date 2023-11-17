@@ -2,16 +2,19 @@
 % Please edit documentation in R/tt_matrix.R
 \name{tt_matrix}
 \alias{tt_matrix}
-\title{Creates a list of results from the \code{tt_get_traveltime} function}
+\title{Creates a list of results from the \code{tt_get_traveltime()} function}
 \usage{
-tt_matrix(travel_times, summ_by = "travel_time")
+tt_matrix(travel_times, summ_by = "travel_time", group_tod = FALSE)
 }
 \arguments{
-\item{travel_times}{A special features object obtained from the `tt_get_traveltime``
+\item{travel_times}{A special features object obtained from the `tt_get_traveltime()``
 function}
 
 \item{summ_by}{Variable to summarize data with, defaults to "travel_time", can
 also be "speed" and "distance"}
+
+\item{group_tod}{Defaults to FALSE, which returns the matrices by hour. If TRUE,
+groups by same TOD based on the input from the TOD and hours vector}
 }
 \value{
 A list of dataframes by route

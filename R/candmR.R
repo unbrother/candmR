@@ -19,4 +19,7 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("class_table",
                                                         "distance_m",
                                                         "distance",
                                                         "travel_time",
-                                                        "Time"))
+                                                        "Time",
+                                                        "TOD",
+                                                        "Code",
+                                                        "value"))

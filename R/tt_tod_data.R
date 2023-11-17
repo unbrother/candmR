@@ -3,7 +3,7 @@
 #' Creates a dataframe with TOD data and hours by either declaring the TOD and
 #' Time variables or by importing a table with the required structure
 #' @param tods Vector containing all TODs
-#' @param hours Vector of hours created by the `tt_hours_vector` function
+#' @param hours Vector of hours created by the `tt_hours_vector()` function
 #' @param table_path Excel sheet containing both TOD and Time columns
 #' @param sheet Name of sheet containing the TOD table
 #' @returns A dataframe with columns `TOD` and `Time`

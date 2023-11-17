@@ -49,7 +49,7 @@ having too many dates}
 avoids entering the \code{start_date} and \code{end_date} and allows for different
 values across stations. Useful when running multiple stations.}
 
-\item{attributes}{Attributes list obtained by the \code{ms2_attributes} function}
+\item{attributes}{Attributes list obtained by the \code{ms2_attributes()} function}
 }
 \value{
 A vector of dates when data is available

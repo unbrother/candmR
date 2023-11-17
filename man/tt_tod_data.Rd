@@ -9,7 +9,7 @@ tt_tod_data(tods, hours, table_path, sheet = "TOD")
 \arguments{
 \item{tods}{Vector containing all TODs}
 
-\item{hours}{Vector of hours created by the \code{tt_hours_vector} function}
+\item{hours}{Vector of hours created by the \code{tt_hours_vector()} function}
 
 \item{table_path}{Excel sheet containing both TOD and Time columns}
 

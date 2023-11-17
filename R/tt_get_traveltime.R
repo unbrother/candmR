@@ -7,12 +7,13 @@
 #' @param tod_list TOD list containing a TOD column describing each TOD or the
 #' equivalencies of TODs by hour.
 #' @param key Google API key
-#' @param name_col How the ID column is called, if used the `tt_gather_points`
+#' @param name_col How the ID column is called, if used the `tt_gather_points()`
 #' function, defaults to "Name"
-#' @param route_col How the Route column is called, if used the `tt_gather_points`
+#' @param route_col How the Route column is called, if used the `tt_gather_points()`
 #' function, defaults to "Route"
 #' @returns A special features object with the travel time results as geographic
-#' lines
+#' lines. Travel times are returned in minutes, distance in miles and speed in
+#' miles per hour.
 #' @export
 
 tt_get_traveltime <- function(points, tod_list, key,
@@ -76,9 +77,9 @@ tt_get_traveltime <- function(points, tod_list, key,
   }
 
   travel_times_all_routes <- travel_times_all_routes %>%
-    dplyr::mutate(travel_time = duration_in_traffic_s/60,
-           distance = distance_m/1600,
-           speed = distance / travel_time * 60)
+    dplyr::mutate(travel_time = round(duration_in_traffic_s/60,2),
+           distance = round(distance_m/1600,2),
+           speed = round(distance / travel_time * 60,2))
 
   return(travel_times_all_routes)
 

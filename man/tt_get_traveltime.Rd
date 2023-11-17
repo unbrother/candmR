@@ -21,15 +21,16 @@ equivalencies of TODs by hour.}
 
 \item{key}{Google API key}
 
-\item{name_col}{How the ID column is called, if used the \code{tt_gather_points}
+\item{name_col}{How the ID column is called, if used the \code{tt_gather_points()}
 function, defaults to "Name"}
 
-\item{route_col}{How the Route column is called, if used the \code{tt_gather_points}
+\item{route_col}{How the Route column is called, if used the \code{tt_gather_points()}
 function, defaults to "Route"}
 }
 \value{
 A special features object with the travel time results as geographic
-lines
+lines. Travel times are returned in minutes, distance in miles and speed in
+miles per hour.
 }
 \description{
 Use Google Maps Directions API and the mapsapi package to directly get
