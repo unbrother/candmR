@@ -1,16 +1,18 @@
-#' Creates a list of results from the `tt_get_traveltime` function
+#' Creates a list of results from the `tt_get_traveltime()` function
 #'
 #' Creates a list of dataframes, each containing the values for all TODs and
 #' segments queried by route. The summarized parameter can be changed
-#' @param travel_times A special features object obtained from the `tt_get_traveltime``
+#' @param travel_times A special features object obtained from the `tt_get_traveltime()``
 #' function
 #' @param summ_by Variable to summarize data with, defaults to "travel_time", can
 #' also be "speed" and "distance"
+#' @param group_tod Defaults to FALSE, which returns the matrices by hour. If TRUE,
+#' groups by same TOD based on the input from the TOD and hours vector
 #' @returns A list of dataframes by route
 #' @export
 #'
 
-tt_matrix <- function(travel_times, summ_by = "travel_time") {
+tt_matrix <- function(travel_times, summ_by = "travel_time", group_tod = FALSE) {
 
   travel_times_df <- travel_times %>% sf::st_drop_geometry()
 
@@ -20,10 +22,24 @@ tt_matrix <- function(travel_times, summ_by = "travel_time") {
 
   for (r in routes_vector) {
 
-    matrix <- travel_times_df[travel_times_df$route == r, c("TOD", "Code", summ_by)] %>%
-      tidyr::pivot_wider(names_from = "Code", values_from = summ_by)
+    if (group_tod == FALSE) {
 
-    list[[r]] <- matrix
+      matrix <- travel_times_df[travel_times_df$route == r, c("departure_time", "Code", summ_by)] %>%
+        tidyr::pivot_wider(names_from = "Code", values_from = summ_by)
+
+      list[[r]] <- matrix
+
+    } else {
+
+      matrix <- travel_times_df[travel_times_df$route == r, c("TOD", "Code", summ_by)] %>%
+        dplyr::group_by(TOD, Code = factor(Code, levels = unique(Code))) %>%
+        dplyr::summarise(value = round(mean(get(summ_by)), 2)) %>%
+        tidyr::pivot_wider(names_from = "Code", values_from = value)
+
+
+      list[[r]] <- matrix
+
+    }
 
   }
 

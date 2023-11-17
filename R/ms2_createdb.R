@@ -3,7 +3,7 @@
 #' Imports data stored in the stations folder and arranges it into a dataframe
 #' @param analysis_type The type of analysis to be performed, between
 #' class, perm and short
-#' @param attributes Attributes list obtained by the `ms2_attributes` function
+#' @param attributes Attributes list obtained by the `ms2_attributes()` function
 #' @param class_number Column number for the reclassification table to name
 #' columns
 #' @returns A dataframe containing all traffic data stored in the  `stations/`

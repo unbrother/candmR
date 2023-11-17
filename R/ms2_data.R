@@ -8,7 +8,7 @@
 #' @param analysis_type The type of analysis to be performed, between
 #' class, perm and short
 #' @param stations_list The dataframe containing the stations to be consulted.
-#' @param attributes Attributes list obtained by the `ms2_attributes` function
+#' @param attributes Attributes list obtained by the `ms2_attributes()` function
 #' @returns Downloaded files within the created stations folder
 #' @export
 ms2_data <-

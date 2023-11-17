@@ -25,7 +25,7 @@ class, perm and short}
 
 \item{stations_list}{The dataframe containing the stations to be consulted.}
 
-\item{attributes}{Attributes list obtained by the \code{ms2_attributes} function}
+\item{attributes}{Attributes list obtained by the \code{ms2_attributes()} function}
 }
 \value{
 Downloaded files within the created stations folder

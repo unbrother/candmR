@@ -18,7 +18,7 @@
 #' @param stations_list The dataframe containing the stations to be consulted,
 #' avoids entering the `start_date` and `end_date` and allows for different
 #' values across stations. Useful when running multiple stations.
-#' @param attributes Attributes list obtained by the `ms2_attributes` function
+#' @param attributes Attributes list obtained by the `ms2_attributes()` function
 #' @returns A vector of dates when data is available
 # Export this function
 #' @export

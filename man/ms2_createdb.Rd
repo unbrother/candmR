@@ -14,7 +14,7 @@ ms2_createdb(
 \item{analysis_type}{The type of analysis to be performed, between
 class, perm and short}
 
-\item{attributes}{Attributes list obtained by the \code{ms2_attributes} function}
+\item{attributes}{Attributes list obtained by the \code{ms2_attributes()} function}
 
 \item{class_number}{Column number for the reclassification table to name
 columns}
