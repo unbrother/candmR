@@ -40,12 +40,21 @@ tt_export <- function(x, file_name, type) {
 
   } else if (type == "shp") {
 
+    x <- x %>%
+      dplyr::mutate(departure_time = lubridate::ymd_hms(departure_time) %>%
+                      as.character(),
+                    dep_hour = lubridate::hour(departure_time)) %>%
+      dplyr::select(alternative_id, leg_id, summary, distance_m, distance_text,
+                    duration_s, duration_text, duration_in_traffic_s,
+                    duration_in_traffic_text, departure_time, dep_hour,
+                    arrival_time, TOD,
+                    route, Code, travel_time, distance, speed)
+
     colnames(x) <- c("alt_id", "leg_id", "summary",
                      "dist_m", "dist_txt", "dur_s", "dur_txt",
-                     "d_tr_s", "d_tr_txt", "dep_time",
-                     "arr_time", "TOD", "route", "Code",
-                     "geometry", "traveltime", "dist",
-                     "speed")
+                     "d_tr_s", "d_tr_txt", "dep_time", "dep_hour",
+                     "arr_time", "TOD", "route", "Code", "traveltime", "dist",
+                     "speed", "geometry")
 
     sf::st_write(x, file_name, append = FALSE)
 
