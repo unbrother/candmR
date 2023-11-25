@@ -1,0 +1,179 @@
+---
+title: "Google Maps Directions Usage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Google Maps Directions Usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(candmR)
+```
+
+# Introduction
+
+The `tt` family of functions were created to gather travel time data from
+the Google Maps Directions API for a given road by using a set of 
+waypoints along the chosen route. These waypoints determine the starting and
+ending points and the required middle points that define the segments to be
+queried. In that sense, spatial data for those points should be predefined
+using either Google Earth or any other GIS software capable of producing a 
+dataset in a format compatible with R (.kml and .shp have been tested).
+
+Defining points is not covered in this document, but it should be noted that
+points should be over the road segment and consider the direction of the 
+traffic flow that will be downloaded. Testing the selected points within Google
+Earth or Google Maps web platform is recommended to ensure that the route is
+possible and only covers the required road segment.
+
+# Defining Query Hours
+
+There are two methods to define a `tod_list` (which is not a list object). The 
+first method considers using the `tt_hours_vector` and defining a vector containing
+the corresponding Time of Day (TOD). 
+
+In the next chunk, a vector of tods is created which relates to a vector of hours,
+created with the corresponding function. The `tt_hours_vector` requires a date
+argument (which must be in the future), as well as a vector of hours in numeric 24
+hour format. These hours relate to the tods vector created before.
+
+```{r hours}
+tods <- c("AM1", "MD1" ,"PM1", "PM1")
+hours <- tt_hours_vector(Sys.Date()+1, c(8, 12, 16, 17))
+
+```
+
+The tod and the hours vectors can be used as an argument for the `tt_tod_data` 
+function, which creates a tod_list, relating both datasets.
+
+```{r tod_list}
+tod_list <- tt_tod_data(tods, hours)
+
+tod_list
+```
+
+The second option to import a tod list is to create an excel file with TOD and
+Time columns and import it using the `tt_tod_data` function with the file path as
+an attribute for the `table_path` argument.
+
+```{r tod_path, eval = FALSE}
+tod_list <- tt_tod_data(table_path = "path")
+
+```
+
+# Gather Points
+
+The `tt_gather_points` function serves as an aid to create a special features object
+containing important information about the waypoints to be requested, mainly the
+Name (or coding) and the route correspondance. The function is designed to look
+into two separate sources. The first is the geographic file containing the points,
+which should have at least an ID parameter that can be related to the second source,
+which should be an excel sheet containing the points attributes, mainly the order in
+which the route should be followed and the route number, for multiple routes. In the
+example route numbers are used to differentiate between the directions of the same
+corridor.
+
+```{r gather, eval = FALSE}
+
+base_points <- tt_gather_points(points_path, point_details)
+
+```
+
+The result is a simple features object:
+
+```{r gather_class}
+
+class(base_points)
+
+```
+
+The previous function can be used, as long as the points object contains a geographic 
+set of points, with an ID and a Route parameters and is sorted by the order in which
+the route is followed, as shown here:
+
+```{r print_points}
+
+base_points
+
+```
+
+# Travel Time Query
+
+The travel time query is performed using the `tt_get_traveltime` function. The
+function requires the points data and the tod_list created in previous steps,
+as well as the API key used to connect to the Google Maps platform. In addition,
+the name and route parameters are helpers in case the Name and Route attributes
+are called differently.
+
+```{r times, eval = FALSE}
+
+travel_times <- tt_get_traveltime(points, tod_list, key = key)
+
+```
+
+The travel_times data included in the package contains an example of one query for
+two routes over 24 hours, with repeating TOD names.
+
+# Summarizing data
+
+The travel times functions of the candmR package include the `tt_matrix` and the
+`tt_export` functions that help summarizing the obtained data, as well as 
+creating working files with it, respectively.
+
+The `tt_matrix` function can be used to summarize by *travel time*, *speed*
+and *distance*. In addition, time of day periods can be grouped together in case
+several hours are queried for the same time period. This grouping will take the
+average value for the attribute consulted.
+The most basic syntax for the `tt_matrix` function would take only the travel times
+data obtained previously and will produce a list of matrices containing an 
+element per route. In this case, a list with two elements, each containing a matrix
+of times by route segment.
+
+```{r matrix}
+
+times <- tt_matrix(travel_times)
+times
+
+```
+
+To add grouping, the argument group_tod should be set as TRUE:
+
+```{r matrix_group}
+
+times <- tt_matrix(travel_times, group_tod = TRUE)
+times
+
+```
+
+To summarize another variable, use the summ_by attribute and set the parameter to 
+either "speed" or "distance". The default value is "travel_times".
+
+```{r matrix_speed}
+
+speeds_tod <- tt_matrix(travel_times, summ_by = "speed", group_tod = TRUE)
+speeds_tod
+
+```
+
+Finally, it is possible to export the results in three different formats:
+A matrix format will create an excel file containing a sheet for each route,
+a dataframe format will create an excel file containing the data from the 
+travel_times object, while a shp format will create a geographic file, also
+based on the travel_times object, containing all the routes consulted and the
+data associated with them (for mapping).
+
+```{r export, eval = FALSE}
+
+tt_export(speeds_tod, "speedsTOD_matrix.xlsx", "matrix")
+tt_export(travel_times, "travel_times.xlsx", "dataframe")
+tt_export(travel_times, "travel_times.shp", "shp")
+
+```

@@ -1,6 +1,6 @@
 Package: candmR
 Title: Diverse Tools for C&M Associates
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: 
     person("Julian", "Mendoza", , "jmendoza@candm-associates.com", role = c("aut", "cre"))
 Description: Gets data from different sources to apply to C&M's workflows.
@@ -26,4 +26,9 @@ Imports:
     methods,
     tidyr
 Suggests: 
+    rmarkdown,
+    knitr,
+    testthat (>= 3.0.0),
     tmap (>= 3.3-2)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
