@@ -18,4 +18,126 @@ knitr::opts_chunk$set(
 library(candmR)
 ```
 
+# Introduction
+
+Read the MS2Soft Webscraping Vignette before working with the `ms2_` functions.
+
+The `MS2Soft` group of functions within the `candmR` package are designed to
+gather traffic data from the MS2 available platforms by US State. 
+The `platforms` dataset contains the current state of available platforms, to add
+a new platform to the package, communicate to the author. To add a temporary 
+platform, use the input_file.xlsx file.
+
+```{r platforms}
+
+platforms
+
+```
+
+# Input Data
+
+The `attributes` dataset contains an example of an attributes list which can be 
+imported by using an inputs file. An example inputs file is included with the
+package in the external data directory. A simplified version can be created with
+the `ms2_inputs` function, which will create an MS Excel file with the corresponding
+inputs and export it into the working directory.
+Similarly, the `stations` dataset contains an example of how stations should be
+organized before starting any queries. The `ms2_stationsCols` function creates
+an MS Excel file containing the required columns to perform the analysis. An 
+explanation of the contents of each column can be found in the package 
+documentation.
+
+```{r ms2_inputs, eval = FALSE}
+
+ms2_inputs(path)
+ms2_stationsCols(path)
+
+```
+
+Once an attributes file has been created, it can be imported as a list with the 
+`ms2_attributes` function, which takes a single argument containing the path to
+the inputs_file.xlsx file. This step can be skipped by more advanced users if
+all attributes are defined within R.
+
+```{r ms2_attrs, eval = FALSE}
+
+attributes <- ms2_attributes(path)
+
+```
+
+The attributes list has 7 elements, which are explained in detail in the
+package documentation. The following chunk shows the contents of the `attributes`
+dataset included as an example.
+
+```{r print_ms2_attrs}
+
+str(attributes)
+
+```
+
+In the same way, the stations list file can be imported as a dataframe using the
+`ms2_readstations` function. Which depends on having a stations Excel file like
+with the configuration shown in the example data, or the one created with the
+`ms2_stationsCols`.
+
+```{r ms2_stns, eval = FALSE}
+
+stations_list <- ms2_readStations(path)
+
+```
+
+The structure of the `stations` data is shown next, as with the `attributes`, a
+detailed description of each variable can be found in the package documentation.
+
+```{r print_ms2_stns}
+
+str(stations)
+
+```
+
+# Data Query
+
+The data scraping is separated into two phases, one where users download the
+available dates, and one where users download the actual traffic data.
+To perform any analysis, users must gather a list of available dates, this helps 
+the program avoid errors due to bad requests, and also saves time, as
+not all date links are visitted during the data download phase.
+
+The `ms2_all_dates` function takes the stations list and the attributes object
+as arguments and returns a list of all available dates within the specified
+date span, which is defined per station within the `stations` data (columns 
+`start_date` and `end_date`). The `ms2_all_dates` function relies on the 
+`ms2_dates` function, which gathers all available dates for only one station.
+
+```{r get_dates, eval = FALSE}
+
+dates_list <- ms2_all_dates(stations_list = stations_list, attributes = attributes)
+
+```
+
+Next, use the `ms2_all_data` function to navigate to each of the URLs containing
+the traffic data. Navigation is performed to reach each station, by given date 
+(from the dates_list), by direction. And it's based on the analysis type defined
+in the attributes. The function runs a Selenium session that navigates and 
+downloads each file into the default downloads directory, and then copies them
+into a "stations/" folder within the working directory. A subfolder referring to 
+the analysis type is created, along with the corresponding years.
+
+```{r get_data, eval = FALSE}
+
+ms2_all_data(dates_list, stations_list = stations_list, attributes = attributes)
+
+```
+
+Finally, the `ms2_createdb` function takes the attributes object as an argument,
+as well as a class number (for class type analyses) to determine the 
+reclassiffication table to be used. This function gathers all downloaded files
+for that specific analysis type and consolidates a database containing all
+values.
+
+```{r database, eval = FALSE}
+
+ms2_createdb(attributes)
+
+```
 
