@@ -1,0 +1,21 @@
+---
+title: "Google Maps Directions Usage Preparation and Prerequisites"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Google Maps Directions Usage Preparation and Prerequisites}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+
+
+# Preparation
