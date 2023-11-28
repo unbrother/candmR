@@ -16,7 +16,7 @@ tt_gather_points <- function(points_path, details_path, sheet = "PointDetails") 
 
   points <- sf::st_read(points_path)
 
-  point_details <- readxl::read_excel(point_details, sheet = sheet)
+  point_details <- readxl::read_excel(details_path, sheet = sheet)
 
   all_points <- dplyr::left_join(points, point_details, by = c("Name" = "Code"))
 
