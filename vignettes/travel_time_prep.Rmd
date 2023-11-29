@@ -16,6 +16,71 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-
+The Google Maps Platform allows to connect via an API and query travel times 
+between two points. With the Directions API you can request routes for any
+set of points and any date in the future, while also changing the time of the 
+trip, so travel times at different times of day (TOD) can be consulted.
+The `tt` group of function included in the **candmR** package allow to perform
+a very specific method of travel time request, which is helpful to gather
+times for trips along one or more corridor, separating by segments and direction.
+The example shown here, takes one corridors on both directions that was segmented
+at every major junction.
 
 # Preparation
+
+The **candmR** package is designed to have external files as inputs, given that it
+relies on geographic data, which is easier to process within specialized GIS software
+(although it can be created in R). The easiest and more straightforward way of 
+defining the corridor routes, is to use Google Earth Pro, by setting the waypoints
+directly in the map UI.
+
+For this example, a segment of I-40 crossing Knoxville, Tennessee was cut down
+into sub segments, at every major junction, for both directions of traffic.
+The figure shows the corridor and the points that define the segments for each
+route. For this example, the WB direction is named R1 and the EB direction is named
+R2. Given the simplicity of the example, this is acceptable, but it would probably
+make more sense to name each leg as R1_WB and R1_EB, or some other descriptive
+code. Any convention works, the main recommendations would only be to keep names
+short for ease of display, and to keep them consistent.
+
+
+```{r segment, echo = FALSE, message = FALSE, out.width="80%"}
+
+tmap::tmap_mode("view")
+tmap::tm_shape(travel_times)+
+  tmap::tm_lines(col = "route")+
+  tmap::tm_shape(base_points)+
+  tmap::tm_dots()
+
+```
+
+
+There are only three input datasets needed:
+1. A dataframe containing the TOD attributes, one column with the TOD code and one
+with the hour.
+1. The points geographic file, preferrably as .kml generated in Google Earth
+1. A points reference, where you define the correspondence of the points to the
+routes.
+
+The TOD attributes can be created with two methods, by defining a tod and an hours
+vector or by feeding the TOD sheet from the inputs file. Both methods work under the
+`tt_tod_data` function.
+
+The points geographic data is reccommended to be created within Google Earth Pro,
+by placing pins at the start at end of each segment. It is important to review that
+the connection between the points returns the expected routing, by avoiding placing
+the points outside of the road, or on an incorrect ramp or direction.
+
+The PointDetails data, which should be generated within an MS Excel file should have
+at least a Route and a Code column. This dataframe will be joined with the points
+data using the `tt_gather_points` function. The new dataframe is one of the main
+inputs of the 
+
+```{r points, echo = FALSE, message = FALSE}
+
+base_points
+
+```
+
+The actual process to gather travel times can be seen in the **travel times** 
+vignette.
