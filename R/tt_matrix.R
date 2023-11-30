@@ -23,6 +23,7 @@ tt_matrix <- function(travel_times, summ_by = "travel_time",
     travel_times_df <- travel_times
   }
 
+
   routes_vector <- travel_times_df[, "route"] %>% unique() %>%
     gtools::mixedsort()
 
