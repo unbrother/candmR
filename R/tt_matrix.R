@@ -8,15 +8,23 @@
 #' also be "speed" and "distance"
 #' @param group_tod Defaults to FALSE, which returns the matrices by hour. If TRUE,
 #' groups by same TOD based on the input from the TOD and hours vector
+#' @param is_sf Set to TRUE to accept direct results from `tt_get_traveltime()`, change
+#' to FALSE to input a dataframe
 #' @returns A list of dataframes by route
 #' @export
 #'
 
-tt_matrix <- function(travel_times, summ_by = "travel_time", group_tod = FALSE) {
+tt_matrix <- function(travel_times, summ_by = "travel_time",
+                      group_tod = FALSE, is_sf = TRUE) {
 
-  travel_times_df <- travel_times %>% sf::st_drop_geometry()
+  if (is_sf == TRUE) {
+    travel_times_df <- travel_times %>% sf::st_drop_geometry()
+  }
 
-  routes_vector <- travel_times_df[, "route"] %>% unique()
+  travel_times_df <- travel_times
+
+  routes_vector <- travel_times_df[, "route"] %>% unique() %>%
+    gtools::mixedsort()
 
   list <- list()
 
