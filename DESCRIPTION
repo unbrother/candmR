@@ -7,7 +7,7 @@ Description: Gets data from different sources to apply to C&M's workflows.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
 LazyData: true
@@ -24,11 +24,12 @@ Imports:
     mapsapi (>= 0.5.3),
     sf (>= 1.0-9),
     methods,
-    tidyr
+    tidyr,
+    tmap (>= 3.3-2),
+    gtools
 Suggests: 
     rmarkdown,
     knitr,
-    testthat (>= 3.0.0),
-    tmap (>= 3.3-2)
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr

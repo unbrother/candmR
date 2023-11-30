@@ -16,12 +16,14 @@ tt_export <- function(x, file_name, type) {
 
     wb <- openxlsx::createWorkbook("n")
 
-    for (elem in 1:length(x)) {
+    ordered <- names(x) %>% gtools::mixedsort()
+
+    for (elem in ordered) {
 
       exp_table <- x[[elem]]
 
-      openxlsx::addWorksheet(wb, paste0("R", elem))
-      openxlsx::writeData(wb, sheet = paste0("R", elem), exp_table)
+      openxlsx::addWorksheet(wb, paste0(elem))
+      openxlsx::writeData(wb, sheet = paste0(elem), exp_table)
 
     }
 

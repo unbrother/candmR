@@ -4,7 +4,12 @@
 \alias{tt_matrix}
 \title{Creates a list of results from the \code{tt_get_traveltime()} function}
 \usage{
-tt_matrix(travel_times, summ_by = "travel_time", group_tod = FALSE)
+tt_matrix(
+  travel_times,
+  summ_by = "travel_time",
+  group_tod = FALSE,
+  is_sf = TRUE
+)
 }
 \arguments{
 \item{travel_times}{A special features object obtained from the `tt_get_traveltime()``
@@ -15,6 +20,9 @@ also be "speed" and "distance"}
 
 \item{group_tod}{Defaults to FALSE, which returns the matrices by hour. If TRUE,
 groups by same TOD based on the input from the TOD and hours vector}
+
+\item{is_sf}{Set to TRUE to accept direct results from \code{tt_get_traveltime()}, change
+to FALSE to input a dataframe}
 }
 \value{
 A list of dataframes by route
