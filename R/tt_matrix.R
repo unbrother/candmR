@@ -19,13 +19,14 @@ tt_matrix <- function(travel_times, summ_by = "travel_time",
 
   if (is_sf == TRUE) {
     travel_times_df <- travel_times %>% sf::st_drop_geometry()
+    routes_vector <- travel_times_df[, "route"] %>% unique() %>%
+      gtools::mixedsort()
   } else {
     travel_times_df <- travel_times
+    routes_vector <- travel_times_df[, "route"] %>% unique() %>%
+      dplyr::pull() %>%
+      gtools::mixedsort()
   }
-
-  routes_vector <- travel_times_df[, "route"] %>% unique() %>%
-    pull() %>%
-    gtools::mixedsort()
 
   list <- list()
 
