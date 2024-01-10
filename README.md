@@ -16,7 +16,7 @@ from github.
 
 
 ```r
-install.github("unbrother/candmR")
+install.github("CMAssoc/candmR")
 ```
 
 It's also useful to install **candmR** with vignettes, which are help files that
@@ -24,14 +24,23 @@ describe the package functionality. This can be done by adding the build_vignett
 argument.
 
 ```r
-install.github("unbrother/candmR", build_vignettes = TRUE)
+install.github("CMAssoc/candmR", build_vignettes = TRUE)
+```
+
+Finally, users can look into the *C&M - Documents* Teams channel, within the 
+*Data Scrapping* folder, for the built source package with .tar.gz extension.
+The command to install from source is shown below, consider to change the "path"
+part with the correct path from your system.
+
+```r
+install.packages('path/candmR_0.1.0.tar.gz', repos=NULL, type='source')
 ```
 
 ## Usage
 
 ### MS2Soft Webscraping
 
-The `ms2` group of functions from **canmR** are used to download traffic data from
+The `ms2` group of functions from **candmR** are used to download traffic data from
 the MS2Soft platform. Three analysis types can be performed separately:
 
 - Permanent Station Analysis
