@@ -16,7 +16,7 @@ from github.
 
 
 ```r
-install.github("CMAssoc/candmR")
+install_github("CMAssoc/candmR")
 ```
 
 It's also useful to install **candmR** with vignettes, which are help files that
@@ -24,7 +24,7 @@ describe the package functionality. This can be done by adding the build_vignett
 argument.
 
 ```r
-install.github("CMAssoc/candmR", build_vignettes = TRUE)
+install_github("CMAssoc/candmR", build_vignettes = TRUE)
 ```
 
 Finally, users can look into the *C&M - Documents* Teams channel, within the 

@@ -42,7 +42,8 @@ ms2_all_dates <- function(main_url,
 
   }
 
-  stations_vector <- stations_list[stations_list$type == analysis_type,] %>% .data$Loc_ID
+  stations_type <- stations_list[stations_list$type == analysis_type,]
+  stations_vector <- stations_type$Loc_ID
 
   dates_list <- list()
 
