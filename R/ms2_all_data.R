@@ -25,7 +25,8 @@ ms2_all_data <- function(dates_list,
 
   }
 
-  stations_vector <- stations_list[stations_list$type == analysis_type,] %>% .data$Loc_ID
+  stations_type <- stations_list[stations_list$type == analysis_type,]
+  stations_vector <- stations_type$Loc_ID
 
   for (station in stations_vector) {
 
