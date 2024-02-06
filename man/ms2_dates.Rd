@@ -5,15 +5,15 @@
 \title{Get a vector of available dates for an MS2Soft Station}
 \usage{
 ms2_dates(
-  station,
-  main_url,
-  analysis_type = c("class", "perm", "short", "speed"),
-  offset,
+  station = NULL,
+  main_url = NULL,
+  analysis_type = "short",
+  offset = NULL,
   a,
-  start_date,
-  end_date,
+  start_date = NULL,
+  end_date = NULL,
   quiet = TRUE,
-  day_type = c("weekday", "weekend", "all"),
+  day_type = "all",
   sampling = TRUE,
   sample_weeks = 1,
   stations_list,

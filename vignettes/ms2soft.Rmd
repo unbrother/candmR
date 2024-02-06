@@ -115,6 +115,46 @@ dates_list <- ms2_all_dates(stations_list = stations_list, attributes = attribut
 
 ```
 
+The time to scrape one year of data per station is somewhat dependant on the
+internet speed and the processing capabilities of the system, but it has been
+timed around 5 minutes. Since this process consists of browsing along each day of
+each year, regardless of the data being available or not, it is the most time 
+consuming in terms of computer work, and because of this, the most prone to errors
+due to network disconnection or power outages. The results are not stored in the
+session until the process is fully done. Because of this, it is recommended to
+split larger stations lists in sets, depending on how many years will be consulted.
+As an example, if running 10 years of 6 stations (5 minutes x 10 years x 6 stations), 
+users can expect their computers to be navigating during 5 hours, which is not 
+very dangerous. On the other hand, having 5 years of 40 stations, would take 
+almost 17 hours, same with 2 years of 80 stations, and so on. Users should
+split their stations list in sets that allow for passive monitoring, like leaving
+the computer working overnight (risky because internet providers usually do their
+maintenance at this time, but practical) or splitting sets of 4 hours to be able
+to check the results. If done on servers, larger stations sets can be consulted
+at the same time, due to them not being as vulnerable from disconnections.
+It is important to split the list by stations, not by years, so that all 
+years are collected for each station in the same run.
+
+When splitting, it is recommended to do a subset within R, and leave all stations
+untouched in the stations_list file, this is useful because that file will serve as
+a general record, as well as removing the need to have different input files or
+having to modify it. 
+
+To split the stations, users can do a simple subset in the stations_list object,
+the following code performs the **ms2_all_dates** function over the first 10
+stations of the stations_list object, then the next 10, while storing each result
+in a dates_list numbered variable, which is then stored as the dates_list object
+needed for the **ms2_all_data** function to run.
+
+```{r split eval = FALSE}
+
+dates_list_1 <- ms2_all_dates(stations_list = stations_list[1:10,], attributes = attributes)
+dates_list_2 <- ms2_all_dates(stations_list = stations_list[11:20,], attributes = attributes)
+
+dates_list <- c(dates_list_1, dates_list_2)
+
+```
+
 Next, use the `ms2_all_data` function to navigate to each of the URLs containing
 the traffic data. Navigation is performed to reach each station, by given date 
 (from the dates_list), by direction. And it's based on the analysis type defined
@@ -128,6 +168,7 @@ the analysis type is created, along with the corresponding years.
 ms2_all_data(dates_list, stations_list = stations_list, attributes = attributes)
 
 ```
+
 
 Finally, the `ms2_createdb` function takes the attributes object as an argument,
 as well as a class number (for class type analyses) to determine the 

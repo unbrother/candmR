@@ -14,7 +14,7 @@
 #'
 
 ms2_createdb <-
-  function(analysis_type = c("class", "perm", "short", "speed"),
+  function(analysis_type = NULL,
            attributes = attributes,
            class_number,
            get_interval = FALSE) {
@@ -23,7 +23,7 @@ ms2_createdb <-
     # if missing, analysis type has to be set as an argument
     if (!missing(attributes)) {
 
-      analysis_type = attributes[["analysis_type"]]
+      analysis_type <-  attributes[["analysis_type"]]
 
     }
 

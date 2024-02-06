@@ -32,7 +32,17 @@ ms2_data <-
     if (analysis_type == "class") {
       stations <- stations_list[stations_list$type == analysis_type, ]
       direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
-      direction_vector <- c(substr(direction_id, 1, 2), substr(direction_id, 3, 4))
+
+      if (direction_id == "aggr") {
+
+        direction_vector <- "aggr"
+
+      } else {
+
+        direction_vector <- c(substr(direction_id, 1, 2), substr(direction_id, 3, 4))
+
+      }
+
       dir.create("stations", showWarnings = FALSE)
       dir.create("stations/class", showWarnings = FALSE)
       dir.create(paste0("stations/class/",
@@ -62,18 +72,38 @@ ms2_data <-
 
       for (direction in direction_vector) {
 
-        url <- paste0("https://", dot,
-                      ".public.ms2soft.com/tcds/tcount_gcs.asp?offset=",
-                      offset,
-                      "&local_id=",
-                      station, "_", direction,
-                      "&a=",
-                      a,
-                      "&sdate=",
-                      date,
-                      "&jump_date=",
-                      date,
-                      "&classDate=&speedDate=&gapDate=&int=&type=class&count_type=class")
+        if (length(direction_vector) != 2) {
+
+          url <- paste0("https://", dot,
+                        ".public.ms2soft.com/tcds/tcount_gcs.asp?offset=",
+                        offset,
+                        "&local_id=",
+                        station,
+                        "&a=",
+                        a,
+                        "&sdate=",
+                        date,
+                        "&jump_date=",
+                        date,
+                        "&classDate=&speedDate=&gapDate=&int=&type=class&count_type=class")
+
+        } else {
+
+          url <- paste0("https://", dot,
+                        ".public.ms2soft.com/tcds/tcount_gcs.asp?offset=",
+                        offset,
+                        "&local_id=",
+                        station, "_", direction,
+                        "&a=",
+                        a,
+                        "&sdate=",
+                        date,
+                        "&jump_date=",
+                        date,
+                        "&classDate=&speedDate=&gapDate=&int=&type=class&count_type=class")
+
+        }
+
 
         # Navigate to the site containing the station by id, direction and date
 
@@ -103,8 +133,17 @@ ms2_data <-
     } else if (analysis_type == "perm") {
 
       stations <- stations_list[stations_list$type == analysis_type, ]
-      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
-      direction_vector <- c(substr(direction_id, 1, 2), substr(direction_id, 3, 4))
+
+      if (direction_id == "aggr") {
+
+        direction_vector <- "aggr"
+
+      } else {
+
+        direction_vector <- c(substr(direction_id, 1, 2), substr(direction_id, 3, 4))
+
+      }
+
       dir.create("stations", showWarnings = FALSE)
       dir.create("stations/perm", showWarnings = FALSE)
       dir.create(paste0("stations/perm/",
@@ -133,17 +172,35 @@ ms2_data <-
       remDr$navigate(main_url)
 
       for (direction in direction_vector) {
-        url <-
-          paste0(main_url,
-                 "tcount.asp?offset=",
-                 offset,
-                 "&local_id=",
-                 station,
-                 "_",
-                 direction,"&a=",
-                 a,
-                 "&sdate=",
-                 date)
+
+        if (length(direction_vector) != 2) {
+
+          url <-
+            paste0(main_url,
+                   "tcount.asp?offset=",
+                   offset,
+                   "&local_id=",
+                   station
+                   ,"&a=",
+                   a,
+                   "&sdate=",
+                   date)
+
+        } else {
+
+          url <-
+            paste0(main_url,
+                   "tcount.asp?offset=",
+                   offset,
+                   "&local_id=",
+                   station,
+                   "_",
+                   direction,"&a=",
+                   a,
+                   "&sdate=",
+                   date)
+
+        }
 
         # Navigate to the site containing the station by id, direction and date
 
@@ -176,8 +233,17 @@ ms2_data <-
     } else if (analysis_type == "short") {
 
       stations <- stations_list[stations_list$type == analysis_type, ]
-      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
-      direction_vector <- c(substr(direction_id, 1, 2), substr(direction_id, 3, 4))
+
+      if (direction_id == "aggr") {
+
+        direction_vector <- "aggr"
+
+      } else {
+
+        direction_vector <- c(substr(direction_id, 1, 2), substr(direction_id, 3, 4))
+
+      }
+
       dir.create("stations", showWarnings = FALSE)
       dir.create("stations/short", showWarnings = FALSE)
       dir.create(paste0("stations/short/",
@@ -209,17 +275,34 @@ ms2_data <-
 
       for (direction in direction_vector) {
 
-        url <-
-          paste0(main_url,
-                 "tcount.asp?offset=",
-                 offset,
-                 "&local_id=",
-                 station,
-                 "_",
-                 direction,"&a=",
-                 a,
-                 "&sdate=",
-                 date)
+        if (length(direction_vector) != 2) {
+
+          url <-
+            paste0(main_url,
+                   "tcount.asp?offset=",
+                   offset,
+                   "&local_id=",
+                   station,
+                   "&a=",
+                   a,
+                   "&sdate=",
+                   date)
+
+        } else {
+
+          url <-
+            paste0(main_url,
+                   "tcount.asp?offset=",
+                   offset,
+                   "&local_id=",
+                   station,
+                   "_",
+                   direction,"&a=",
+                   a,
+                   "&sdate=",
+                   date)
+
+        }
 
         # Navigate to the site containing the station by id, direction and date
 
