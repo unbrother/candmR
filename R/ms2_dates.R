@@ -24,9 +24,9 @@
 #' @export
 #'
 ms2_dates <-
-  function(station, main_url, analysis_type = c("class", "perm", "short", "speed"),
-           offset, a, start_date, end_date, quiet = TRUE,
-           day_type = c("weekday", "weekend", "all"), sampling = TRUE,
+  function(station = NULL, main_url = NULL, analysis_type = NULL,
+           offset = NULL, a, start_date = NULL, end_date = NULL, quiet = TRUE,
+           day_type = "all", sampling = TRUE,
            sample_weeks = 1, stations_list, attributes) {
 
     if (!missing(stations_list)) {
@@ -133,10 +133,6 @@ ms2_dates <-
 
         available_dates <- rbind(available_dates, cbind(available, day))
 
-        available_dates <- available_dates %>%
-          dplyr::group_by(ym = paste(lubridate::year(day), lubridate::month(day))) %>%
-          dplyr::slice_head(n = 1)
-
       } else if (analysis_type == "short") {
 
         url <-
@@ -171,22 +167,37 @@ ms2_dates <-
 
     available_dates <- available_dates %>% dplyr::filter(available != " ")
 
-    if (day_type == "weekday") {
+    if (analysis_type %in% c("short", "class")) {
+
+      if (day_type == "weekday") {
+
+        available_dates <- available_dates %>%
+          dplyr::mutate(weekday = weekdays(as.Date(day, "%m/%d/%Y"))) %>%
+          dplyr::filter(weekday %in% c("Tuesday", "Wednesday", "Thursday"))
+
+      } else if (day_type == "weekend") {
+
+        available_dates <- available_dates %>%
+          dplyr::mutate(weekday = weekdays(as.Date(day, "%m/%d/%Y"))) %>%
+          dplyr::filter(weekday %in% c("Saturday", "Sunday"))
+
+      } else if (day_type == "all") {
+
+        available_dates <- available_dates %>%
+          dplyr::mutate(weekday = weekdays(as.Date(day, "%m/%d/%Y")))
+
+      }
+
+    } else if (analysis_type == "perm") {
 
       available_dates <- available_dates %>%
-        dplyr::mutate(weekday = weekdays(as.Date(day, "%m/%d/%Y"))) %>%
-        dplyr::filter(weekday %in% c("Tuesday", "Wednesday", "Thursday"))
-
-    } else if (day_type == "weekend") {
-
-      available_dates <- available_dates %>%
-        dplyr::mutate(weekday = weekdays(as.Date(day, "%m/%d/%Y"))) %>%
-        dplyr::filter(weekday %in% c("Saturday", "Sunday"))
-
-    } else if (day_type == "all") {
-
-      available_dates <- available_dates %>%
-        dplyr::mutate(weekday = weekdays(as.Date(day, "%m/%d/%Y")))
+        dplyr::filter(!is.na(available)) %>%
+        dplyr::mutate(ym = paste(lubridate::year(lubridate::mdy(day)), lubridate::month(lubridate::mdy(day))),
+                      year = paste(lubridate::year(lubridate::mdy(day))),
+                      month = lubridate::month(lubridate::mdy(day)) %>% as.numeric()) %>%
+        dplyr::group_by(ym) %>%
+        dplyr::slice_head(n = 1) %>%
+        dplyr::arrange(year, month)
 
     }
 

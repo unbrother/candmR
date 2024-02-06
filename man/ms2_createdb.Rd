@@ -5,9 +5,10 @@
 \title{Create a database from files downloaded}
 \usage{
 ms2_createdb(
-  analysis_type = c("class", "perm", "short", "speed"),
+  analysis_type = NULL,
   attributes = attributes,
-  class_number
+  class_number,
+  get_interval = FALSE
 )
 }
 \arguments{
@@ -18,6 +19,9 @@ class, perm and short}
 
 \item{class_number}{Column number for the reclassification table to name
 columns}
+
+\item{get_interval}{Defaults to FALSE, extracts total data. If TRUE, extracts
+data by interval}
 }
 \value{
 A dataframe containing all traffic data stored in the  \verb{stations/}
