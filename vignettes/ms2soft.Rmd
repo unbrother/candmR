@@ -146,7 +146,7 @@ stations of the stations_list object, then the next 10, while storing each resul
 in a dates_list numbered variable, which is then stored as the dates_list object
 needed for the **ms2_all_data** function to run.
 
-```{r split eval = FALSE}
+```{r split, eval = FALSE}
 
 dates_list_1 <- ms2_all_dates(stations_list = stations_list[1:10,], attributes = attributes)
 dates_list_2 <- ms2_all_dates(stations_list = stations_list[11:20,], attributes = attributes)
