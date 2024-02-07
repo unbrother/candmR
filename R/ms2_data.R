@@ -133,6 +133,7 @@ ms2_data <-
     } else if (analysis_type == "perm") {
 
       stations <- stations_list[stations_list$type == analysis_type, ]
+      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
 
       if (direction_id == "aggr") {
 
@@ -233,6 +234,7 @@ ms2_data <-
     } else if (analysis_type == "short") {
 
       stations <- stations_list[stations_list$type == analysis_type, ]
+      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
 
       if (direction_id == "aggr") {
 

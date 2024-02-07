@@ -7,7 +7,7 @@
 ms2_dates(
   station = NULL,
   main_url = NULL,
-  analysis_type = "short",
+  analysis_type = NULL,
   offset = NULL,
   a,
   start_date = NULL,
