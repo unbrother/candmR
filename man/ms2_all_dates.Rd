@@ -14,7 +14,8 @@ ms2_all_dates(
   sampling = FALSE,
   sample_weeks = 1,
   stations_list,
-  attributes
+  attributes,
+  gather_dates = FALSE
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ avoids entering the \code{start_date} and \code{end_date} and allows for differe
 values across stations. Useful when running multiple stations.}
 
 \item{attributes}{Attributes list obtained by the \code{ms2_attributes} function}
+
+\item{gather_dates}{Input TRUE to gather dates from previously downloaded
+date vectors in the TEMP folder}
 }
 \value{
 A list of dates when data is available

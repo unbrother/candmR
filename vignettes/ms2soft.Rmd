@@ -155,6 +155,23 @@ dates_list <- c(dates_list_1, dates_list_2)
 
 ```
 
+From version 0.2.3, a TEMP folder is created containing all dates vectors created
+during the downloads, as well as a log file that records which stations were
+succesfully downloaded. This helps to not lose any progress from disconnections.
+Running the **ms2_all_dates** function will can be performed as before, but the
+process will create the mentioned folder, where each vector will be stored as 
+an .RDS file. Using the attribute *gather_dates* allows for the function to 
+create the dates_list from the files in the TEMP folder, instead of trying to 
+download the data again. The *attributes* parameter is still needed to extract 
+the analysis type (or using the analysis type parameter).
+
+```{r gatherdates, eval = FALSE}
+
+dates_list <- ms2_all_dates(attributes = attributes, gather_dates = TRUE)
+dates_list <- ms2_all_dates(analysis_type = "perm", gather_dates = TRUE)
+
+```
+
 Next, use the `ms2_all_data` function to navigate to each of the URLs containing
 the traffic data. Navigation is performed to reach each station, by given date 
 (from the dates_list), by direction. And it's based on the analysis type defined

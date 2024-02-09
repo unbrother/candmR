@@ -222,6 +222,22 @@ ms2_dates <-
 
     }
 
-    return(dates_vector <- available_dates$day)
+    # Save log and data
+
+    dates_vector <- available_dates$day
+
+    dir.create("TEMP", showWarnings = FALSE)
+    dir.create("TEMP/date_vectors", showWarnings = FALSE)
+    dir.create(paste0("TEMP/date_vectors/", analysis_type), showWarnings = FALSE)
+
+    saveRDS(object = dates_vector, file = paste0("TEMP/date_vectors/",
+                                                 analysis_type, "/", station, "-", format(Sys.time(), "%Y%m%d_%H.%M"), ".RDS"))
+
+    log_message <- paste0(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " Dates collection for station ", station, " performed correctly")
+
+    write.table(log_message,
+                file = "TEMP/log_dates.csv", col.names = FALSE, row.names = FALSE, append = TRUE)
+
+    return(dates_vector)
 
   }

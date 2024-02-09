@@ -16,7 +16,7 @@
 ms2_createdb <-
   function(analysis_type = NULL,
            attributes = attributes,
-           class_number,
+           class_number = 1,
            get_interval = FALSE) {
 
     # Check for attributes table, if available, gets analysis type from there,
@@ -24,6 +24,7 @@ ms2_createdb <-
     if (!missing(attributes)) {
 
       analysis_type <-  attributes[["analysis_type"]]
+      class_table <- attributes[["class_table"]]
 
     }
 
@@ -70,7 +71,7 @@ ms2_createdb <-
                 stringr::str_extract("(?<=_)(.+)")
 
               # Volume data
-              data <- rvest::read_html(path) %>% rvest::html_table() %>% .data[[2]]
+              data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[2]]
               colnames(data) <- names
 
               metadata <- data.frame(station = c(rep(st, 24)),
@@ -251,6 +252,73 @@ ms2_createdb <-
               }
 
             }
+
+          }
+
+        }
+
+      }
+
+      #### Perm Type ####
+
+    } else if (analysis_type == "perm") {
+
+      # Set parameters for class type analysis
+      years <- list.files(paste0(getwd(), "/stations/short"))
+      names <- c("day", sprintf("H[%d]", seq(1:24)), "Total", "Status")
+      a <- character(0)
+      database <- data.frame()
+
+      for (station in stations) {
+
+        if(!identical(a, list.files(station))) {
+
+          paths <- paste0(station, "/", list.files(station))
+
+          for (path in paths) {
+
+            file_name <- basename(path)
+            clean0 <- str_remove(file_name, ".xlsx")
+            clean1 <- str_remove(clean0, paste0("_", year))
+
+            month <- str_sub(clean1, -2) %>%
+              str_replace("_", "0") %>%
+              as.numeric()
+
+            clean2 <- ifelse(nchar(month) == 1,
+                             str_sub(clean1, end = -3),
+                             str_sub(clean1, end = -4))
+
+            dir <- str_sub(clean3, -7)
+
+            data <- readxl::read_excel(path,
+                                       range = "A11:AA41",
+                                       col_types = c("numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "numeric", "numeric",
+                                                     "text"),
+                                       col_names = FALSE)
+
+            colnames(data) <- names
+
+            metadata <- data.frane(station = c(rep(st, 31)),
+                                   year = c(rep(year, 31)),
+                                   month = c(rep(month, 31)),
+                                   dir = c(rep(dir, 31)))
+
+            data <- cbind(metadata, data) %>% filter(!is.na(day))
+
+            database <- rbind(database, data)
 
           }
 

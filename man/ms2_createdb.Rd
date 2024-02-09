@@ -7,7 +7,7 @@
 ms2_createdb(
   analysis_type = NULL,
   attributes = attributes,
-  class_number,
+  class_number = 1,
   get_interval = FALSE
 )
 }

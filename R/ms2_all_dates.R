@@ -16,6 +16,8 @@
 #' avoids entering the `start_date` and `end_date` and allows for different
 #' values across stations. Useful when running multiple stations.
 #' @param attributes Attributes list obtained by the `ms2_attributes` function
+#' @param gather_dates Input TRUE to gather dates from previously downloaded
+#' date vectors in the TEMP folder
 #' @returns A list of dates when data is available
 # Export this function
 #' @export
@@ -29,7 +31,8 @@ ms2_all_dates <- function(main_url,
                           sampling = FALSE,
                           sample_weeks = 1,
                           stations_list,
-                          attributes) {
+                          attributes,
+                          gather_dates = FALSE) {
 
   if (!missing(attributes)) {
 
@@ -42,23 +45,42 @@ ms2_all_dates <- function(main_url,
 
   }
 
-  # names(dates_list)
+  if (gather_dates == FALSE) {
 
-  stations_type <- stations_list[stations_list$type == analysis_type,]
-  stations_vector <- stations_type$Loc_ID
+    # names(dates_list)
 
-  dates_list <- list()
+    stations_type <- stations_list[stations_list$type == analysis_type,]
+    stations_vector <- stations_type$Loc_ID
 
-  for (station in stations_vector) {
+    dates_list <- list()
 
-    dates_vector <- ms2_dates(main_url = main_url,
-                              analysis_type = analysis_type,
-                              offset = offset, a = a,
-                              station = station, quiet = quiet,
-                              day_type = day_type, sampling = sampling,
-                              stations_list = stations_list)
+    for (station in stations_vector) {
 
-    dates_list[[station]] <- dates_vector
+      dates_vector <- ms2_dates(main_url = main_url,
+                                analysis_type = analysis_type,
+                                offset = offset, a = a,
+                                station = station, quiet = quiet,
+                                day_type = day_type, sampling = sampling,
+                                stations_list = stations_list)
+
+      dates_list[[station]] <- dates_vector
+
+    }
+
+  } else if (gather_dates == TRUE) {
+
+
+    dates_list <- list()
+
+    files <- list.files(paste0("TEMP/date_vectors/", analysis_type))
+    names <- stringr::str_extract(files, "[^-]+")
+
+    paths <- paste0("TEMP/date_vectors/", analysis_type, "/", files)
+
+    dates_list <- lapply(paths, readRDS)
+
+    names(dates_list) <- names
+
 
   }
 
