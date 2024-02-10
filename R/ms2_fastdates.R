@@ -124,7 +124,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
             first <- table$X3[position] %>%
               gsub("\\,[^\\,]*$", "", .) %>% gsub(",","",.)
 
-            second <- stringr::str_extract(tables[["AADT"]]$X3, "\\,[^\\,]*$") %>%
+            second <- stringr::str_extract(table$X3[position], "\\,[^\\,]*$") %>%
               gsub(",","",.) %>%
               sub("^(\\d{3}).*$", "\\1", .)
 
@@ -146,7 +146,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
         }
 
-        DHIV30 <- table$X4[6:10] %>% as.numeric()
+        DHIV30 <- table$X4[6:10] %>% gsub(",", "",.) %>% as.numeric()
         K_perc <- table$X5[6:10] %>% as.numeric()
         D_perc <- table$X6[6:10] %>% as.numeric()
         PA <- table$X7[6:10]
