@@ -113,7 +113,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
         table <- tables[["AADT"]]
 
-        years <- table$X2[6:10] %>% as.numeric()
+        year <- table$X2[6:10] %>% as.numeric()
 
         volumes <- c()
 
@@ -153,7 +153,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
         BC <- table$X8[6:10]
         SRC <- table$X9[6:10]
 
-        data <- data.frame(years, volumes, DHIV30, K, D, PA, BC, SRC) %>%
+        data <- data.frame(year, volumes, DHIV30, K_perc, D_perc, PA, BC, SRC) %>%
           dplyr::mutate(station = station) %>%
           dplyr::filter(!is.na(years))
 
@@ -181,14 +181,14 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
   }
 
+  rd$server$stop()
+
   if (table_type == "aadt") {
 
-    results %>%
+    results <- results %>%
       purrr::reduce(rbind)
 
   }
-
-  rd$server$stop()
 
   return(results)
 
