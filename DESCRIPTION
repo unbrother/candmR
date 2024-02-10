@@ -1,6 +1,6 @@
 Package: candmR
 Title: Diverse Tools for C&M Associates
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: 
     person("Julian", "Mendoza", , "jmendoza@candm-associates.com", role = c("aut", "cre"))
 Description: Gets data from different sources to apply to C&M's workflows.

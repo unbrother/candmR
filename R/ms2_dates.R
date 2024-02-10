@@ -203,20 +203,27 @@ ms2_dates <-
 
     if (sampling == TRUE) {
 
-      mean <- available_dates %>%
+      if (analysis_type == "perm") {
 
-        dplyr:: mutate(month = lubridate::month(as.Date(day, "%m/%d/%Y")),
-                       year = lubridate::year(as.Date(day, "%m/%d/%Y"))) %>%
-        dplyr::group_by(year) %>% dplyr::summarise(sum = dplyr::n()) %>%
-        dplyr::ungroup() %>%
-        dplyr::summarise(mean = mean(sum)) %>% dplyr::pull()
+        print("Sampling not recommended for permanent stations, using full dataset")
 
-      if (mean > 48) {
+      } else {
 
-        available_dates <- available_dates %>%
-          dplyr::mutate(month = lubridate::month(as.Date(day, "%m/%d/%Y")),
-                        year = lubridate::year(as.Date(day, "%m/%d/%Y"))) %>%
-          dplyr::group_by(year, month, weekday) %>% dplyr::slice_sample(n = sample_weeks)
+        mean <- available_dates %>%
+          dplyr:: mutate(month = lubridate::month(as.Date(day, "%m/%d/%Y")),
+                         year = lubridate::year(as.Date(day, "%m/%d/%Y"))) %>%
+          dplyr::group_by(year) %>% dplyr::summarise(sum = dplyr::n()) %>%
+          dplyr::ungroup() %>%
+          dplyr::summarise(mean = mean(sum)) %>% dplyr::pull()
+
+        if (mean > 48) {
+
+          available_dates <- available_dates %>%
+            dplyr::mutate(month = lubridate::month(as.Date(day, "%m/%d/%Y")),
+                          year = lubridate::year(as.Date(day, "%m/%d/%Y"))) %>%
+            dplyr::group_by(year, month, weekday) %>% dplyr::slice_sample(n = sample_weeks)
+
+        }
 
       }
 
