@@ -104,33 +104,76 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
       rvest::read_html() %>%
       rvest::html_table()
 
-    if (table_type == "aadt") {
+    names_list <- lapply(tables, function(x) paste(x$X1[1], x$X1[2]))
+    names_list <- lapply(names_list, function(x) substr(x, 1, 15))
 
-      years <- tables[[19]]$X2 %>% as.numeric() %>%
-        .[!is.na(.)]
+    names(tables) <- unlist(names_list) %>% gsub("\n", "", .) %>% gsub(" ", "", .)
 
-      volumes <- tables[[19]]$X3 %>% gsub(",", "", .) %>% as.numeric() %>%
-        .[!is.na(.)]
+      if (table_type == "aadt") {
 
-      data <- data.frame(years = years, aadt = volumes)
+        table <- tables[["AADT"]]
 
-      results[[station]] <- data
+        years <- table$X2[6:10] %>% as.numeric()
 
-    } else if (table_type == "dates volume") {
+        volumes <- c()
 
-      data <- tables[[22]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
-        .[!is.na(.)]
+        for (position in 6:10) {
 
-      results[[station]] <- data
+          if (nchar(table$X3[position]) > 3) {
 
-    } else if (table_type == "dates class") {
+            first <- table$X3[position] %>%
+              gsub("\\,[^\\,]*$", "", .) %>% gsub(",","",.)
 
-      data <- tables[[25]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
-        .[!is.na(.)]
+            second <- stringr::str_extract(tables[["AADT"]]$X3, "\\,[^\\,]*$") %>%
+              gsub(",","",.) %>%
+              sub("^(\\d{3}).*$", "\\1", .)
 
-      results[[station]] <- data
+            volume <- paste0(first, second) %>% as.numeric()
 
-    }
+            volumes <- append(volumes, volume)
+
+
+          } else {
+
+            first <- table$X3[position] %>%
+              gsub("\\,[^\\,]*$", "", .) %>% gsub(",","",.)
+
+            volume <- first %>% as.numeric()
+
+            volumes <- append(volumes, volume)
+
+          }
+
+        }
+
+        DHIV30 <- table$X4[6:10] %>% as.numeric()
+        K_perc <- table$X5[6:10] %>% as.numeric()
+        D_perc <- table$X6[6:10] %>% as.numeric()
+        PA <- table$X7[6:10]
+        BC <- table$X8[6:10]
+        SRC <- table$X9[6:10]
+
+        data <- data.frame(years, volumes, DHIV30, K, D, PA, BC, SRC)
+
+        results[[station]] <- data
+
+      } else if (table_type == "dates volume") {
+
+        data <- tables[["VOLUMECOUNT"]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
+          format(format = "%m/%d/%Y") %>%
+          .[!is.na(.)]
+
+        results[[station]] <- data
+
+      } else if (table_type == "dates class") {
+
+        data <- tables[["CLASSIFICATION"]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
+          format(format = "%m/%d/%Y") %>%
+          .[!is.na(.)]
+
+        results[[station]] <- data
+
+      }
 
     Sys.sleep(5)
 
