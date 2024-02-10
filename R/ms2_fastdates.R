@@ -153,7 +153,10 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
         BC <- table$X8[6:10]
         SRC <- table$X9[6:10]
 
-        data <- data.frame(years, volumes, DHIV30, K, D, PA, BC, SRC)
+        data <- data.frame(years, volumes, DHIV30, K, D, PA, BC, SRC) %>%
+          dplyr::mutate(station = station) %>%
+          dplyr::filter(!is.na(years)) %>%
+          purrr::reduce(rbind)
 
         results[[station]] <- data
 
