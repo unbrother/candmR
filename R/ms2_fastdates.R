@@ -155,8 +155,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
         data <- data.frame(years, volumes, DHIV30, K, D, PA, BC, SRC) %>%
           dplyr::mutate(station = station) %>%
-          dplyr::filter(!is.na(years)) %>%
-          purrr::reduce(rbind)
+          dplyr::filter(!is.na(years))
 
         results[[station]] <- data
 
@@ -179,6 +178,13 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
       }
 
     Sys.sleep(5)
+
+  }
+
+  if (table_type == "aadt") {
+
+    results %>%
+      purrr::reduce(rbind)
 
   }
 
