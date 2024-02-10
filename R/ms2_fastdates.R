@@ -104,33 +104,47 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
       rvest::read_html() %>%
       rvest::html_table()
 
-    if (table_type == "aadt") {
+    names_list <- lapply(tables, function(x) paste(x$X1[1], x$X1[2]))
+    names_list <- lapply(names_list, function(x) substr(x, 1, 15))
 
-      years <- tables[[19]]$X2 %>% as.numeric() %>%
-        .[!is.na(.)]
+    names(tables) <- unlist(names_list) %>% gsub("\n", "", .) %>% gsub(" ", "", .)
 
-      volumes <- tables[[19]]$X3 %>% gsub(",", "", .) %>% as.numeric() %>%
-        .[!is.na(.)]
+      if (table_type == "aadt") {
 
-      data <- data.frame(years = years, aadt = volumes)
+        years <- tables[["AADT"]]$X2 %>% as.numeric() %>%
+          .[!is.na(.)]
 
-      results[[station]] <- data
+        first <- tables[["AADT"]]$X3 %>%
+          gsub("\\,[^\\,]*$", "", .) %>% gsub(",","",.)
 
-    } else if (table_type == "dates volume") {
+        second <- stringr::str_extract(tables[["AADT"]]$X3, "\\,[^\\,]*$") %>%
+          gsub(",","",.) %>%
+          sub("^(\\d{3}).*$", "\\1", .)
 
-      data <- tables[[22]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
-        .[!is.na(.)]
+        volumes <- paste0(first, second) %>% as.numeric() %>%
+          .[!is.na(.)]
 
-      results[[station]] <- data
+        data <- data.frame(years = years, aadt = volumes)
 
-    } else if (table_type == "dates class") {
+        results[[station]] <- data
 
-      data <- tables[[25]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
-        .[!is.na(.)]
+      } else if (table_type == "dates volume") {
 
-      results[[station]] <- data
+        data <- tables[["VOLUMECOUNT"]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
+          format(format = "%m/%d/%Y") %>%
+          .[!is.na(.)]
 
-    }
+        results[[station]] <- data
+
+      } else if (table_type == "dates class") {
+
+        data <- tables[["CLASSIFICATION"]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
+          format(format = "%m/%d/%Y") %>%
+          .[!is.na(.)]
+
+        results[[station]] <- data
+
+      }
 
     Sys.sleep(5)
 
