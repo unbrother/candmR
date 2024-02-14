@@ -30,8 +30,9 @@ ms2_data <-
     }
 
     if (analysis_type == "class") {
+
       stations <- stations_list[stations_list$type == analysis_type, ]
-      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
+      direction_id <- stations[stations$Loc_ID == station, "dir_id"]
 
       if (direction_id == "aggr") {
 
@@ -133,7 +134,7 @@ ms2_data <-
     } else if (analysis_type == "perm") {
 
       stations <- stations_list[stations_list$type == analysis_type, ]
-      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
+      direction_id <- stations[stations$Loc_ID == station, "dir_id"]
 
       if (direction_id == "aggr") {
 
@@ -234,7 +235,7 @@ ms2_data <-
     } else if (analysis_type == "short") {
 
       stations <- stations_list[stations_list$type == analysis_type, ]
-      direction_id <- stations_list[stations_list$Loc_ID == station, "dir_id"]
+      direction_id <- stations[stations$Loc_ID == station, "dir_id"]
 
       if (direction_id == "aggr") {
 

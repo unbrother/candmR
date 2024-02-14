@@ -74,6 +74,8 @@ ms2_getlist <- function(attributes, district = NULL, county = NULL, community = 
 
   rd$server$stop()
 
+  write.csv(tcds, "outputs/stations_search.csv")
+
   return(tcds)
 
 }

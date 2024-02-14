@@ -41,6 +41,7 @@ ms2_createdb <-
 
       # Gather all years in the analysis folder
       for (year in years) {
+
         stations <- paste0("stations/class/", year, "/",
                            list.files(paste0("stations/class/",
                                              year)))
@@ -95,7 +96,7 @@ ms2_createdb <-
 
     } else if (analysis_type == "short") {
 
-      # Set parameters for class type analysis
+      # Set parameters for short type analysis
       years <- list.files(paste0(getwd(), "/stations/short"))
       a <- character(0)
       database <- data.frame()
@@ -264,7 +265,7 @@ ms2_createdb <-
     } else if (analysis_type == "perm") {
 
       # Set parameters for class type analysis
-      years <- list.files(paste0(getwd(), "/stations/short"))
+      years <- list.files(paste0(getwd(), "/stations/perm"))
       names <- c("day", sprintf("H[%d]", seq(1:24)), "Total", "Status")
       a <- character(0)
       database <- data.frame()
@@ -278,18 +279,23 @@ ms2_createdb <-
           for (path in paths) {
 
             file_name <- basename(path)
-            clean0 <- str_remove(file_name, ".xlsx")
-            clean1 <- str_remove(clean0, paste0("_", year))
+            clean0 <- stringr::str_remove(file_name, ".xlsx")
+            clean1 <- stringr::str_remove(clean0, paste0("_", year))
 
-            month <- str_sub(clean1, -2) %>%
-              str_replace("_", "0") %>%
+            month <- stringr::str_sub(clean1, -2) %>%
+              stringr::str_replace("_", "0") %>%
               as.numeric()
 
             clean2 <- ifelse(nchar(month) == 1,
-                             str_sub(clean1, end = -3),
-                             str_sub(clean1, end = -4))
+                             stringr::str_sub(clean1, end = -3),
+                             stringr::str_sub(clean1, end = -4))
 
-            dir <- str_sub(clean3, -7)
+            clean3 <- stringr::str_extract(clean2, "(?<=_)(.+)")
+            st <- clean3 %>%
+              stringr::str_extract(., "(.+)(?=_)")
+            # Direction ID
+            dir <- clean3 %>%
+              stringr::str_extract(., "(?<=_)(.+)")
 
             data <- readxl::read_excel(path,
                                        range = "A11:AA41",
@@ -311,12 +317,12 @@ ms2_createdb <-
 
             colnames(data) <- names
 
-            metadata <- data.frane(station = c(rep(st, 31)),
+            metadata <- data.frame(station = c(rep(st, 31)),
                                    year = c(rep(year, 31)),
                                    month = c(rep(month, 31)),
                                    dir = c(rep(dir, 31)))
 
-            data <- cbind(metadata, data) %>% filter(!is.na(day))
+            data <- cbind(metadata, data) %>% dplyr::filter(!is.na(day))
 
             database <- rbind(database, data)
 

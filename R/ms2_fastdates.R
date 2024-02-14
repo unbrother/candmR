@@ -24,7 +24,10 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
     main_url = attributes[["main_url"]]
     search_url = paste0(main_url, "search.asp?home=1")
+    analysis_type = attributes[["analysis_type"]]
     dl_path = attributes[["dl_path"]]
+
+    stations_list <- stations_list %>% dplyr::group_by(Loc_ID) %>% dplyr::distinct(Loc_ID)
 
   } else {
 
@@ -187,6 +190,8 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
     results <- results %>%
       purrr::reduce(rbind)
+
+    write.csv(results, "output/aadt.csv")
 
   }
 
