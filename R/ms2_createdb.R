@@ -175,44 +175,44 @@ ms2_createdb <-
 
                   }
 
-                # Interval
-                interval <- data[14, 1] %>% stringr::str_extract(., "(?<= )(.+)") %>%
-                  stringr::str_extract(., "(.+)(?= )") %>% as.numeric()
+                  # Interval
+                  interval <- data[14, 1] %>% stringr::str_extract(., "(?<= )(.+)") %>%
+                    stringr::str_extract(., "(.+)(?= )") %>% as.numeric()
 
-                # Check for full hours or partial intervals
-                if (interval == 60) {
+                  # Check for full hours or partial intervals
+                  if (interval == 60) {
 
-                  table <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
-                    data.frame(volume = .)
+                    table <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
+                      data.frame(volume = .)
 
-                } else if (interval == 15) {
+                  } else if (interval == 15) {
 
-                  table <- data[17:40, 6] %>% dplyr::pull() %>%
-                    data.frame(volume = .)
+                    table <- data[17:40, 6] %>% dplyr::pull() %>%
+                      data.frame(volume = .)
+
+                  }
+
+                  # Metadata
+                  metadata <- data.frame(station = c(rep(st, 24)),
+                                         date = c(rep(date, 24)),
+                                         year = c(rep(year, 24)),
+                                         dir = c(rep(dir, 24)),
+                                         interval = c(rep(interval, 24)),
+                                         time = seq(0, 23, 1))
+
+                  # Bind table columns
+                  data <- cbind(metadata, table)
+
+                  # Bind extracted rows
+                  database <- rbind(database, data)
 
                 }
-
-                # Metadata
-                metadata <- data.frame(station = c(rep(st, 24)),
-                                       date = c(rep(date, 24)),
-                                       year = c(rep(year, 24)),
-                                       dir = c(rep(dir, 24)),
-                                       interval = c(rep(interval, 24)),
-                                       time = seq(0, 23, 1))
-
-                # Bind table columns
-                data <- cbind(metadata, table)
-
-                # Bind extracted rows
-                database <- rbind(database, data)
 
               }
 
             }
 
-          }
-
-          print(paste0("Added data from station: ", station))
+            print(paste0("Added data from station: ", station))
 
           }
 
@@ -280,60 +280,62 @@ ms2_createdb <-
 
                   }
 
-                interval <- data[14, 1] %>% stringr::str_extract(., "(?<= )(.+)") %>%
-                  stringr::str_extract(., "(.+)(?= )") %>% as.numeric()
+                  interval <- data[14, 1] %>% stringr::str_extract(., "(?<= )(.+)") %>%
+                    stringr::str_extract(., "(.+)(?= )") %>% as.numeric()
 
-                if (interval == 60) {
+                  if (interval == 60) {
 
-                  int1 <- rep(NA, 24) %>% data.frame()
+                    int1 <- rep(NA, 24) %>% data.frame()
 
-                  int2 <- rep(NA, 24) %>% data.frame()
+                    int2 <- rep(NA, 24) %>% data.frame()
 
-                  int3 <- rep(NA, 24) %>% data.frame()
+                    int3 <- rep(NA, 24) %>% data.frame()
 
-                  int4 <- rep(NA, 24) %>% data.frame()
+                    int4 <- rep(NA, 24) %>% data.frame()
 
-                  Volume <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
-                    data.frame(volume = .)
+                    Volume <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
+                      data.frame(volume = .)
 
-                  table <- cbind(int1,
-                                 int2,
-                                 int3,
-                                 int4,
-                                 Volume)
+                    table <- cbind(int1,
+                                   int2,
+                                   int3,
+                                   int4,
+                                   Volume)
 
-                } else if (interval == 15) {
+                  } else if (interval == 15) {
 
-                  int1 <- data[17:40, 2] %>% dplyr::pull() %>% as.numeric() %>%
-                    data.frame(Int_1 = .)
+                    int1 <- data[17:40, 2] %>% dplyr::pull() %>% as.numeric() %>%
+                      data.frame(Int_1 = .)
 
-                  int2 <- data[17:40, 3] %>% dplyr::pull() %>% as.numeric() %>%
-                    data.frame(Int_2 = .)
+                    int2 <- data[17:40, 3] %>% dplyr::pull() %>% as.numeric() %>%
+                      data.frame(Int_2 = .)
 
-                  int3 <- data[17:40, 4] %>% dplyr::pull() %>% as.numeric() %>%
-                    data.frame(Int_3 = .)
+                    int3 <- data[17:40, 4] %>% dplyr::pull() %>% as.numeric() %>%
+                      data.frame(Int_3 = .)
 
-                  int4 <- data[17:40, 5] %>% dplyr::pull() %>% as.numeric() %>%
-                    data.frame(Int_4 = .)
+                    int4 <- data[17:40, 5] %>% dplyr::pull() %>% as.numeric() %>%
+                      data.frame(Int_4 = .)
 
-                  table <- cbind(int1,
-                                 int2,
-                                 int3,
-                                 int4) %>%
-                    dplyr::mutate(Volume = Int_1 + Int_2 + Int_3 + Int_4)
+                    table <- cbind(int1,
+                                   int2,
+                                   int3,
+                                   int4) %>%
+                      dplyr::mutate(Volume = Int_1 + Int_2 + Int_3 + Int_4)
+
+                  }
+
+                  metadata <- data.frame(station = c(rep(st, 24)),
+                                         date = c(rep(date, 24)),
+                                         year = c(rep(year, 24)),
+                                         dir = c(rep(dir, 24)),
+                                         interval = c(rep(interval, 24)),
+                                         time = seq(0, 23, 1))
+
+                  data <- cbind(metadata, table)
+
+                  database <- rbind(database, data)
 
                 }
-
-                metadata <- data.frame(station = c(rep(st, 24)),
-                                       date = c(rep(date, 24)),
-                                       year = c(rep(year, 24)),
-                                       dir = c(rep(dir, 24)),
-                                       interval = c(rep(interval, 24)),
-                                       time = seq(0, 23, 1))
-
-                data <- cbind(metadata, table)
-
-                database <- rbind(database, data)
 
               }
 
@@ -341,9 +343,9 @@ ms2_createdb <-
 
           }
 
-        }
+          print(paste0("Added data from station: ", station))
 
-        print(paste0("Added data from station: ", station))
+        }
 
       }
 
