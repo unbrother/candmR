@@ -28,6 +28,10 @@ ms2_createdb <-
 
     }
 
+    # Initialize database
+
+    database <- data.frame()
+
     #### Class Type ####
 
     if (analysis_type == "class") {
@@ -37,7 +41,6 @@ ms2_createdb <-
       class_name <- paste0("Class", class_number)
       names <- c("time", class_table[, class_name] %>% dplyr::pull())
       a <- character(0)
-      database <- data.frame()
 
       # Gather all years in the analysis folder
       for (year in years) {
@@ -210,6 +213,8 @@ ms2_createdb <-
           }
 
           print(paste0("Added data from station: ", station))
+
+          }
 
         }
 
