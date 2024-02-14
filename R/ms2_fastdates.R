@@ -27,7 +27,9 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
     analysis_type = attributes[["analysis_type"]]
     dl_path = attributes[["dl_path"]]
 
-    stations_list <- stations_list %>% dplyr::group_by(Loc_ID) %>% dplyr::distinct(Loc_ID)
+    stations_list <- stations_list %>%
+      dplyr::filter(analysis_type == analysis_type) %>%
+      dplyr::group_by(Loc_ID) %>% dplyr::distinct(Loc_ID)
 
   } else {
 
