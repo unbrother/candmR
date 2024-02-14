@@ -42,6 +42,8 @@ ms2_all_data <- function(dates_list,
 
     }
 
+    print(paste0("Finished data download for station: ", station))
+
   }
 
 }
