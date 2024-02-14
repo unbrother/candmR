@@ -40,9 +40,17 @@ ms2_all_data <- function(dates_list,
                stations_list = stations_list,
                attributes = attributes)
 
+      paste0(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " Finished data download for station: ", station, " for year: ", year)
+
     }
 
-    print(paste0("Finished data download for station: ", station))
+    log_message <- paste0(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " Finished data download for station: ", station)
+
+    print(log_message)
+
+    write.table(log_message,
+                file = "TEMP/log_data.csv", col.names = FALSE, row.names = FALSE, append = TRUE)
+
 
   }
 

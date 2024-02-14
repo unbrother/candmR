@@ -90,6 +90,8 @@ ms2_createdb <-
 
         }
 
+        print(paste0("Added data from station: ", station))
+
       }
 
       #### Short Type ####
@@ -127,20 +129,48 @@ ms2_createdb <-
                 # File name (necesarry because files are html)
                 file_name <- basename(path)
 
-                # Use rvest to extract html data
-                data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[1]]
+                tryCatch({
 
-                # Station ID
-                st <- data[2, 2] %>% dplyr::pull() %>%
-                  stringr::str_extract(., "(.+)(?=_)")
+                  suppressMessages({
+                    data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[1]]
+                  })}, error = function(e){data <<- NA_character_})
 
-                # Direction ID
-                dir <- data[2, 2] %>% dplyr::pull() %>%
-                  stringr::str_extract(., "(?<=_)(.+)")
+                if (is.na(data[1,1])) {
 
-                # Date
-                date <- data[2, 9] %>% dplyr::pull() %>%
-                  as.Date(format = "%m/%d/%Y")
+                  print(paste0("No data found for station: ", file_name, " in ", year))
+
+                } else {
+
+                  # Station ID
+                  st <- data[2, 2] %>% dplyr::pull() %>%
+                    stringr::str_extract(., "(.+)(?=_)")
+
+                  if (is.na(st)) {
+
+                    st <- with(data, X2[match("Location ID", X1)])
+
+                  }
+
+                  # Direction ID
+                  dir <- data[2, 2] %>% dplyr::pull() %>%
+                    stringr::str_extract(., "(?<=_)(.+)")
+
+                  if (is.na(dir)) {
+
+                    dir <- with(data, X2[match("Direction", X1)])
+
+                  }
+
+                  # Date
+                  date <- data[2, 9] %>% dplyr::pull() %>%
+                    as.Date(format = "%m/%d/%Y")
+
+                  if (is.na(date)) {
+
+                    date <- with(data, X9[match("Start Date", X8)]) %>%
+                      as.Date(format = "%m/%d/%Y")
+
+                  }
 
                 # Interval
                 interval <- data[14, 1] %>% stringr::str_extract(., "(?<= )(.+)") %>%
@@ -179,6 +209,8 @@ ms2_createdb <-
 
           }
 
+          print(paste0("Added data from station: ", station))
+
         }
 
       } else if (get_interval == TRUE) {
@@ -199,23 +231,71 @@ ms2_createdb <-
               for (path in paths) {
 
                 file_name <- basename(path)
-                data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[1]]
-                st <- data[2, 2] %>% dplyr::pull() %>%
-                  stringr::str_extract(., "(.+)(?=_)")
 
-                dir <- data[2, 2] %>% dplyr::pull() %>%
-                  stringr::str_extract(., "(?<=_)(.+)")
+                tryCatch({
 
-                date <- data[2, 9] %>% dplyr::pull() %>%
-                  as.Date(format = "%m/%d/%Y")
+                  suppressMessages({
+                    data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[1]]
+                  })}, error = function(e){data <<- NA_character_})
+
+                if (is.na(data[1,1])) {
+
+                  print(paste0("No data found for station: ", file_name, " in ", year))
+
+                } else {
+
+                  # Station ID
+                  st <- data[2, 2] %>% dplyr::pull() %>%
+                    stringr::str_extract(., "(.+)(?=_)")
+
+                  if (is.na(st)) {
+
+                    st <- with(data, X2[match("Location ID", X1)])
+
+                  }
+
+                  # Direction ID
+                  dir <- data[2, 2] %>% dplyr::pull() %>%
+                    stringr::str_extract(., "(?<=_)(.+)")
+
+                  if (is.na(dir)) {
+
+                    dir <- with(data, X2[match("Direction", X1)])
+
+                  }
+
+                  # Date
+                  date <- data[2, 9] %>% dplyr::pull() %>%
+                    as.Date(format = "%m/%d/%Y")
+
+                  if (is.na(date)) {
+
+                    date <- with(data, X9[match("Start Date", X8)]) %>%
+                      as.Date(format = "%m/%d/%Y")
+
+                  }
 
                 interval <- data[14, 1] %>% stringr::str_extract(., "(?<= )(.+)") %>%
                   stringr::str_extract(., "(.+)(?= )") %>% as.numeric()
 
                 if (interval == 60) {
 
-                  table <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
+                  int1 <- rep(NA, 24) %>% data.frame()
+
+                  int2 <- rep(NA, 24) %>% data.frame()
+
+                  int3 <- rep(NA, 24) %>% data.frame()
+
+                  int4 <- rep(NA, 24) %>% data.frame()
+
+                  Volume <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
                     data.frame(volume = .)
+
+                  table <- cbind(int1,
+                                 int2,
+                                 int3,
+                                 int4,
+                                 Volume)
 
                 } else if (interval == 15) {
 
@@ -257,6 +337,8 @@ ms2_createdb <-
           }
 
         }
+
+        print(paste0("Added data from station: ", station))
 
       }
 
@@ -331,6 +413,8 @@ ms2_createdb <-
         }
 
       }
+
+      print(paste0("Added data from station: ", station))
 
     }
 
