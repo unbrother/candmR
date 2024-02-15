@@ -175,7 +175,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
         results[[station]] <- data
 
-        write.csv(data, paste0("outputs/yeary_volumes/yearly_volume_", station, ".csv"))
+        write.csv(data, paste0("outputs/yearly_volumes/yearly_volume_", station, ".csv"))
 
       } else if (table_type == "dates volume") {
 
