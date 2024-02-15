@@ -102,7 +102,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
   if (table_type == "aadt") {
 
-    dir.create("outputs")
+    dir.create("outputs", showWarnings = FALSE)
     dir.create("outputs/yearly_volumes", showWarnings = FALSE)
 
   }
