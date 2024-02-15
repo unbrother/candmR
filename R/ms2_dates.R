@@ -60,11 +60,12 @@ ms2_dates <-
 
     # Creates Selenium driver object
     rd <- RSelenium::rsDriver(browser = "firefox",
-                              chromever = NULL)
+                              chromever = NULL,
+                              verbose = FALSE)
     # Access the client object
     remDr <- rd$client
 
-    remDr$open()
+    remDr$open(silent = TRUE)
 
     # Navigate to the main MS2 site, which allows to keep a session open within
     # their system, preventing timeouts

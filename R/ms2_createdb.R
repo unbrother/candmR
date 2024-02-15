@@ -66,16 +66,53 @@ ms2_createdb <-
 
               # Metadata columns for ID
 
-              # Station ID
-              st <- stringr::str_extract(clean0, "(?<=_)(.+)(?=_)") %>%
-                stringr::str_extract("(.+)(?=_)")
+              tryCatch({
 
-              # Direction ID
-              dir <- stringr::str_extract(clean0, "(?<=_)(.+)(?=_)") %>%
-                stringr::str_extract("(?<=_)(.+)")
+                suppressMessages({
+                  meta <- rvest::read_html(path) %>% rvest::html_table() %>% .[[1]]
+                })}, error = function(e){meta <<- NA_character_})
+
+              if (is.na(data[1,1])) {
+
+                print(paste0("No data found for station: ", file_name, " in ", year))
+
+              } else {
+
+                # Station ID
+                st <- stringr::str_extract(clean0, "(?<=_)(.+)(?=_)") %>%
+                  stringr::str_extract("(.+)(?=_)")
+
+                if (is.na(st)) {
+
+                  st <- with(meta, X2[match("Location ID", X1)])
+
+                }
+
+                # Direction ID
+                dir <- stringr::str_extract(clean0, "(?<=_)(.+)(?=_)") %>%
+                  stringr::str_extract("(?<=_)(.+)")
+
+                if (is.na(dir)) {
+
+                  dir <- with(meta, X8[match("Direction", X7)])
+
+                }
+
+              }
 
               # Volume data
-              data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[2]]
+                tryCatch({
+
+                  suppressMessages({
+                    data <- rvest::read_html(path) %>% rvest::html_table() %>% .[[2]]
+                  })}, error = function(e){date <<- NA_character_})
+
+                if (is.na(data[1,1])) {
+
+                  print(paste0("No data found for station: ", file_name, " in ", year))
+
+                }
+
               colnames(data) <- names
 
               metadata <- data.frame(station = c(rep(st, 24)),
@@ -285,16 +322,16 @@ ms2_createdb <-
 
                   if (interval == 60) {
 
-                    int1 <- rep(NA, 24) %>% data.frame()
+                    int1 <- rep(NA, 24) %>% data.frame(Int_1 = .)
 
-                    int2 <- rep(NA, 24) %>% data.frame()
+                    int2 <- rep(NA, 24) %>% data.frame(Int_2 = .)
 
-                    int3 <- rep(NA, 24) %>% data.frame()
+                    int3 <- rep(NA, 24) %>% data.frame(Int_3 = .)
 
-                    int4 <- rep(NA, 24) %>% data.frame()
+                    int4 <- rep(NA, 24) %>% data.frame(Int_4 = .)
 
                     Volume <- c(data[16, 8] %>% dplyr::pull(), data[17:39, 6] %>% dplyr::pull()) %>%
-                      data.frame(volume = .)
+                      data.frame(Volume = .)
 
                     table <- cbind(int1,
                                    int2,
@@ -424,6 +461,11 @@ ms2_createdb <-
       print(paste0("Added data from station: ", station))
 
     }
+
+    dir.create("outputs", showWarnings = FALSE)
+    dir.create(paste0("outputs/", analysis_type), showWarnings = FALSE)
+
+    write.csv(database, paste0("outputs/", analysis_type, "/", analysis_type, "_database.csv"))
 
     return(database)
 

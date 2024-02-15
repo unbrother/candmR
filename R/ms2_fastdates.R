@@ -43,15 +43,19 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
   # Creates Selenium driver object
   rd <- RSelenium::rsDriver(browser = "firefox",
-                            chromever = NULL)
+                            chromever = NULL,
+                            verbose = FALSE)
   # Access the client object
   remDr <- rd$client
 
-  remDr$open()
+  remDr$open(silent = TRUE)
 
   # Navigate to the main MS2 site, which allows to keep a session open within
   # their system, preventing timeouts
   remDr$navigate(main_url)
+
+  Sys.sleep(5)
+
   remDr$navigate(search_url)
 
   Sys.sleep(5)
@@ -67,12 +71,12 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
   search_button <- remDr$findElement(using = "css selector", value = "#btnSubmit")
   search_button$clickElement()
 
-  Sys.sleep(10)
+  Sys.sleep(15)
 
   list_view <- remDr$findElement(using = "css selector", value = ".button_sml:nth-child(1)")
   list_view$clickElement()
 
-  Sys.sleep(10)
+  Sys.sleep(15)
 
   export <- remDr$findElement(using = "css selector", value = "#ContentPlaceHolder1_btnEXPORT")
   export$clickElement()
@@ -95,6 +99,13 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
   colnames(tcds_select) <- c("Loc_ID", "offset", "url")
 
   results <- list()
+
+  if (table_type == "aadt") {
+
+    dir.create("outputs")
+    dir.create("outputs/yearly_volumes", showWarnings = FALSE)
+
+  }
 
   for (i in 1:nrow(tcds_select)) {
 
@@ -164,6 +175,8 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
         results[[station]] <- data
 
+        write.csv(data, paste0("outputs/yeary_volumes/yearly_volume_", station, ".csv"))
+
       } else if (table_type == "dates volume") {
 
         data <- tables[["VOLUMECOUNT"]]$X2 %>% as.Date(format = "%a %m/%d/%Y") %>%
@@ -193,7 +206,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
     results <- results %>%
       purrr::reduce(rbind)
 
-    write.csv(results, "output/aadt.csv")
+    write.csv(results, "outputs/aadt.csv")
 
   }
 

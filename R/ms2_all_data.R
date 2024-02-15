@@ -48,8 +48,11 @@ ms2_all_data <- function(dates_list,
 
     print(log_message)
 
+    dir.create("TEMP", showWarnings = FALSE)
+
     write.table(log_message,
-                file = "TEMP/log_data.csv", col.names = FALSE, row.names = FALSE, append = TRUE)
+                file = paste0("TEMP/log_data_", analysis_type, ".csv"),
+                col.names = FALSE, row.names = FALSE, append = TRUE)
 
 
   }
