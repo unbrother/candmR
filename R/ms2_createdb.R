@@ -128,9 +128,11 @@ ms2_createdb <-
 
           }
 
+          print(paste0("Added data from station: ", station))
+
         }
 
-        print(paste0("Added data from station: ", station))
+        print(paste0("Finished adding data for: ", year))
 
       }
 
@@ -252,6 +254,8 @@ ms2_createdb <-
             print(paste0("Added data from station: ", station))
 
           }
+
+          print(paste0("Finished adding data for: ", year))
 
         }
 
@@ -383,6 +387,8 @@ ms2_createdb <-
           print(paste0("Added data from station: ", station))
 
         }
+
+        print(paste0("Finished adding data for: ", year))
 
       }
 

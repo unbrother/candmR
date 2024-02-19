@@ -114,7 +114,7 @@ ms2_fastdates <- function(attributes, district = NULL, county = NULL, community 
 
     remDr$navigate(url)
 
-    Sys.sleep(10)
+    Sys.sleep(20)
 
     tables <- remDr$getPageSource()[[1]] %>%
       rvest::read_html() %>%
