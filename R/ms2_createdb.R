@@ -72,7 +72,7 @@ ms2_createdb <-
                   meta <- rvest::read_html(path) %>% rvest::html_table() %>% .[[1]]
                 })}, error = function(e){meta <<- NA_character_})
 
-              if (is.na(data[1,1])) {
+              if (is.na(meta[1,1])) {
 
                 print(paste0("No data found for station: ", file_name, " in ", year))
 

@@ -40,7 +40,7 @@ ms2_all_data <- function(dates_list,
                stations_list = stations_list,
                attributes = attributes)
 
-      print(paste0(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " Finished data download for station: ", station, " for: ", date))
+      print(paste0(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), " Finished data download for station: ", station, " on: ", date))
 
     }
 
