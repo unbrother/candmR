@@ -49,8 +49,8 @@ documentation.
 
 ```{r ms2_inputs, eval = FALSE}
 
-ms2_inputs(path)
-ms2_stationsCols(path)
+ms2_inputs()
+ms2_stationsCols()
 
 ```
 
@@ -61,7 +61,7 @@ all attributes are defined within R.
 
 ```{r ms2_attrs, eval = FALSE}
 
-attributes <- ms2_attributes(path)
+attributes <- ms2_attributes()
 
 ```
 
@@ -103,6 +103,8 @@ To perform any analysis, users must gather a list of available dates, this helps
 the program avoid errors due to bad requests, and also saves time, as
 not all date links are visitted during the data download phase.
 
+## Gather Dates
+
 The `ms2_all_dates` function takes the stations list and the attributes object
 as arguments and returns a list of all available dates within the specified
 date span, which is defined per station within the `stations` data (columns 
@@ -120,8 +122,10 @@ internet speed and the processing capabilities of the system, but it has been
 timed around 5 minutes. Since this process consists of browsing along each day of
 each year, regardless of the data being available or not, it is the most time 
 consuming in terms of computer work, and because of this, the most prone to errors
-due to network disconnection or power outages. The results are not stored in the
-session until the process is fully done. Because of this, it is recommended to
+due to network disconnection or power outages. The downloaded dates vector per station
+will be stored in a TEMP folder, but the full list that serves as an input for the
+next steps will only be created if the process is finished in full. 
+Because of this, it is recommended to
 split larger stations lists in sets, depending on how many years will be consulted.
 As an example, if running 10 years of 6 stations (5 minutes x 10 years x 6 stations), 
 users can expect their computers to be navigating during 5 hours, which is not 
@@ -172,6 +176,50 @@ dates_list <- ms2_all_dates(analysis_type = "perm", gather_dates = TRUE)
 
 ```
 
+As of version 0.3.0, an additional function *ms2_fastdates()* was implemented,
+allowing for faster downloads when treating short term and classification data 
+(it can be run on permanent station but results are not useful, because it is known
+in advance that the program will find many dates in the same year). 
+The *ms2_fastdates()* function navigates to the front page of each station, and 
+gathers the table displayed depending on the type of analysis to be performed.
+Search terms have to be inputted as they would in the front page of the platform, 
+currently it takes the district, the county and the community. This is used to
+collect an in-session list that allows for the indexing of the stations within
+the Selenium navigation session. These terms can be left blank, as this would not
+have a significant impact in the processing time, but having the search terms kept
+constant is useful for station identification along the process.
+
+
+```{r fastdates, eval = FALSE}
+
+# Gather dates for volume stations
+dates_list <- ms2_fastdates(attributes, county = "Webb",
+                          stations_list, table_type = "dates volume")
+
+# Gather dates for classification station
+dates_list <- ms2_fastdates(attributes, county = "Webb",
+                          stations_list, table_type = "dates class")
+
+```
+
+It is worth noting that the *ms2_fastdates()* function is much faster than the
+*ms2_all_dates()* function but can be less reliable as some dates might be 
+reported as existing in the front page but in reality they are not.
+
+Additionally, this function has the capacity of gathering the AADT table displayed
+in this same front page. The gathered data is stored within a new folder created
+inside the outputs folder and named yearly_volumes, as well as consolidated in a
+table named aadt.
+
+```{r aadt, eval = FALSE}
+
+dates_list <- ms2_fastdates(attributes, county = "Webb",
+                          stations_list, table_type = "aadt")
+
+```
+
+## Get Data
+
 Next, use the `ms2_all_data` function to navigate to each of the URLs containing
 the traffic data. Navigation is performed to reach each station, by given date 
 (from the dates_list), by direction. And it's based on the analysis type defined
@@ -186,6 +234,7 @@ ms2_all_data(dates_list, stations_list = stations_list, attributes = attributes)
 
 ```
 
+## Consolidate Database
 
 Finally, the `ms2_createdb` function takes the attributes object as an argument,
 as well as a class number (for class type analyses) to determine the 

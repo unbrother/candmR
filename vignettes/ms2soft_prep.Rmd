@@ -121,6 +121,8 @@ The next set of columns are user generated. First, start_year and end_year defin
 The next column contains the type of analysis to perform for the corresponding station. The recommended approach when performing multiple analysis for the same stations (i.e. permanent and classification), is to repeat the record for that station with different types, as shown in the example below.
 The bridge vicinity column is not used at the moment so it can be left empty, it purpose is to be able to relate the stations traffic profiles to the border crossings of the bridge in closest vicinity.
 Finally, the dir_id column show contain both directions available for the station as presented in the MS2Soft platform, the code uses this column to separate each direction and concatenate the URL where data is stored. 
+
+**Important note on direction IDs**
 Two special cases have been identified regarding how directions are reported in the MS2Soft platform. The first case consists on stations located on 1-way roads, which does not produce a typical URL. The second case occurrs in stations that are 2-way, but do not report traffic by direction. For these two cases, the *direction_id* variable should be filled with **aggr** (for aggregated). This will allow the functions to not expect a pair of directions and to look for the data in the main page of the given station.
 
 <center>

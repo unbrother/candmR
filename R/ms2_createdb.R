@@ -39,7 +39,7 @@ ms2_createdb <-
       # Set parameters for class type analysis
       years <- list.files(paste0(getwd(), "/stations/class"))
       class_name <- paste0("Class", class_number)
-      names <- c("time", class_table[, class_name] %>% dplyr::pull())
+      names <- c("hours", class_table[, class_name] %>% dplyr::pull())
       a <- character(0)
 
       # Gather all years in the analysis folder
@@ -118,7 +118,8 @@ ms2_createdb <-
               metadata <- data.frame(station = c(rep(st, 24)),
                                      date = c(rep(date, 24)),
                                      year = c(rep(year, 24)),
-                                     dir = c(rep(dir, 24)))
+                                     dir = c(rep(dir, 24)),
+                                     time = seq(0, 23, 1))
 
               data <- cbind(metadata, data[1:24,])
 
