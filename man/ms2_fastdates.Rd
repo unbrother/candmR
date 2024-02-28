@@ -9,8 +9,7 @@ ms2_fastdates(
   district = NULL,
   county = NULL,
   community = NULL,
-  stations_list,
-  table_type = "aadt"
+  stations_list
 )
 }
 \arguments{
@@ -22,10 +21,8 @@ ms2_fastdates(
 
 \item{community}{Vector of communities}
 
-\item{stations_list}{The dataframe containing the stations to be consulted,}
-
-\item{table_type}{Type of data to gather between "aadt", "dates volume" or
-"dates class", defaults to "aadt"}
+\item{stations_list}{The dataframe containing the stations to be consulted,
+can also be a vector containing the stations' location IDs}
 }
 \value{
 A dataframe containing all stations in a given district, county or

@@ -7,6 +7,8 @@
 #' @name candmR
 #' @importFrom dplyr %>%
 #' @importFrom methods is
+#' @importFrom utils write.csv
+#' @importFrom utils write.table
 NULL
 
 ## quiets concerns of R CMD check re: the .'s that appear in pipelines

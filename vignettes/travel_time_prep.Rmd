@@ -47,9 +47,9 @@ short for ease of display, and to keep them consistent.
 ```{r segment, echo = FALSE, message = FALSE, out.width="80%"}
 
 tmap::tmap_mode("view")
-tmap::tm_shape(travel_times)+
-  tmap::tm_lines(col = "route")+
-  tmap::tm_shape(base_points)+
+tmap::tm_shape(travel_times) +
+  tmap::tm_lines(col = "route") +
+  tmap::tm_shape(base_points) +
   tmap::tm_dots()
 
 ```
